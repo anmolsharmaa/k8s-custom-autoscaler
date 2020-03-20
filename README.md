@@ -47,7 +47,7 @@ Here variables like Product, Model, Version are defined in the files, signifying
   - A Job that performs model analysis on image batches assigned in a reliable way (retry `backoffLimit` - when fail). 
 
 
-## What is the key take away?
+## What are the key take aways?
 
 * What we explored & their trade-offs.
-* Have a look at the [scaling-cron.sh](scaling-cron.sh) file. I have reached to this state are some iterations necessary to host it statelessly and in an auto-recoverable manner on preemptible nodes, which auto-destruct after 24 hours. 
+* Have a look at the [scaling-cron.sh](scaling-cron.sh) file. It had reached this state after iterations including changes necessary to sustain disruption caused by preemptible nodes, which auto-destruct after every 24 hours. 
