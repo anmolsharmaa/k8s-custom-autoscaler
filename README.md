@@ -36,7 +36,7 @@ Here variables like Product, Model, Version are defined in the files, signifying
     `kubectl create secret generic gcs-admin-access --from-file /tmp/gcs-service-account.json`
   - generate k8s deployment manifest file using ansible-playbook. Do pass values to extra-vars.
     `ansible-playbook ansible.yaml --extra-vars 'k8s_cluster_name= k8s_cluster_zone= redis_fqdn='`
-  - apply deployment manifest using `kubectl` to GKE cluster
+  - apply deployment manifest using `kubectl` to GKE cluster.\
     `kubectl apply -f <deployment-file.yaml>`
 
 
@@ -44,7 +44,7 @@ Here variables like Product, Model, Version are defined in the files, signifying
 
 * Recently, I've come across a K8S resource pattern called (Jobs)[https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/]. Thinking of refactoring the entire implementation with:
   - A Deployment that dispenses a Job.
-  - A Job that performs model analysis on image batches assigned in a reliable way with retries(backoffLimit). 
+  - A Job that performs model analysis on image batches assigned in a reliable way (retry `backoffLimit` - when fail). 
 
 
 ## What is the key take away?
