@@ -1,0 +1,26 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    product: "xyz"
+    model: "mdl-01"
+    version: "05"
+    k8s_namespace: "default"
+    scaling_cron_env_vars:
+        SLEEP_SECONDS: '"15"'
+        REDIS_HOST: "{{ redis_fqdn }}"
+        REDIS_PORT: '"{{ redis_port | default('6379') }}"'
+        MAX_REPLICAS: '"500"'
+        K8S_DEPLOYMENT: "scaling-cron-{{ product|lower }}-{{ model|lower }}-{{ version|lower }}"
+        ALERT_TYPE: "{{ alert_type | default('null') }}"
+        SLACK_WEBHOOK_URL: "{{ slack_webhook_url }}"
+        K8S_CLUSTER_NAME: "{{ k8s_cluster_name }}"
+        K8S_CLUSTER_ZONE: "{{ k8s_cluster_zone }}"
+        K8S_NAMESPACE: '"{{ k8s_namespace | default("default")}}"'
+        PRODUCT: "{{ product }}"
+        MODEL: "{{ model }}"
+        VERSION: '"{{ version }}"'
+  tasks:
+    - name: render Jinja2 template to produce K8S deployment mainfest 
+      template:
+        src: k8s-deployment.yaml
+        dest: "scaling-cron-{{ product }}-{{ model }}-{{ version }}-deployment.yaml"     

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scaling-cron-{{ product|lower }}-{{ model|lower }}-{{ version|lower }}
+  namespace: "{{ k8s_namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: scaling-cron
+      product: {{ product }}
+      model: {{ model }}
+      version: "{{ version }}"
+  template:
+    metadata:
+      labels:
+        app: scaling-cron
+        product: {{ product }}
+        model: {{ model }}
+        version: "{{ version }}"
+    spec:
+      imagePullSecrets:
+        - name: gcr-io-read-access
+      containers:
+        - name: scaling-cron-{{ product|lower }}-{{ model|lower }}-{{ version|lower }}
+          image: gcr.io/{{ gcp_project_id }}/scaling_cron:{{ scaling_cron_tag }}
+          command: ["/bin/bash", "scaling-cron.sh"]
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "0.1"
+              memory: "100Mi"
+            requests:
+              cpu: "0.02"
+              memory: "30Mi"
+          env:
+{% for vars in scaling_cron_env_vars|dict2items %}
+            - name: {{ vars.key }}
+              value: {{ vars.value }}
+{% endfor %}
+          volumeMounts:
+            - name: gke-admin-access
+              mountPath: "/var/run/secret/cloud.google.com"
+              readOnly: true
+      volumes:
+        - name: gke-admin-access
+          secret:
+            secretName: gke-admin-access
